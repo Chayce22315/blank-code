@@ -1,0 +1,553 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b0d0b">
+  <meta name="description" content="blank code is building an autonomous-first coding workspace with specialist ai agents, real playtesting, and a game-development kitchen. cursor, but better. blank money.">
+  <title>blank code — cursor, but better. blank money.</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0b0d0b;
+      --panel: #121612;
+      --panel-2: #171c17;
+      --line: rgba(234, 244, 228, .12);
+      --text: #f1f5ec;
+      --muted: #a0a99b;
+      --soft: #687164;
+      --lime: #d7ff69;
+      --lime-dark: #a6d735;
+      --orange: #ff9b68;
+      --max: 1160px;
+      --radius: 24px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 90px; }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(ellipse at 50% -20%, rgba(117, 150, 71, .15), transparent 42rem),
+        var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background-image: radial-gradient(rgba(220, 239, 207, .10) .65px, transparent .65px);
+      background-size: 22px 22px;
+      opacity: .24;
+      mask-image: linear-gradient(to bottom, black, transparent 70%);
+    }
+    a { color: inherit; text-decoration: none; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    button { font: inherit; }
+    ::selection { background: var(--lime); color: #11150b; }
+    .wrap { width: min(var(--max), calc(100% - 48px)); margin-inline: auto; }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 9px;
+      color: var(--lime); font: 650 11px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+      letter-spacing: .13em; text-transform: uppercase;
+    }
+    .eyebrow::before { content: ""; width: 7px; height: 7px; border-radius: 2px; background: var(--lime); box-shadow: 0 0 14px rgba(215,255,105,.55); }
+    .topbar {
+      position: sticky; top: 0; z-index: 20;
+      backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+      background: rgba(11, 13, 11, .78);
+      border-bottom: 1px solid rgba(234,244,228,.08);
+    }
+    .nav { min-height: 76px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+    .brand { display: inline-flex; align-items: center; gap: 11px; font-size: 17px; font-weight: 760; letter-spacing: -.055em; }
+    .brand-mark {
+      width: 34px; height: 34px; display: grid; place-items: center;
+      border: 1px solid rgba(215,255,105,.44); border-radius: 10px;
+      color: var(--lime); background: rgba(215,255,105,.07);
+    }
+    .brand-mark svg { width: 20px; height: 20px; }
+    .nav-links { display: flex; align-items: center; gap: 29px; color: #b6bdb1; font-size: 13px; }
+    .nav-links a { transition: color .2s ease; }
+    .nav-links a:hover { color: var(--lime); }
+    .nav-actions { display: flex; align-items: center; gap: 10px; }
+    .button {
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      min-height: 45px; padding: 0 18px; border-radius: 12px;
+      border: 1px solid transparent; cursor: pointer; font-size: 13px; font-weight: 720;
+      transition: transform .2s ease, background .2s ease, border-color .2s ease;
+      white-space: nowrap;
+    }
+    .button:hover { transform: translateY(-2px); }
+    .button-primary { color: #15190e; background: var(--lime); box-shadow: 0 8px 28px rgba(184,229,72,.10); }
+    .button-primary:hover { background: #e2ff8d; }
+    .button-ghost { border-color: var(--line); color: var(--text); background: rgba(255,255,255,.025); }
+    .button-ghost:hover { border-color: rgba(215,255,105,.4); background: rgba(215,255,105,.06); }
+    .button svg { width: 15px; height: 15px; }
+    .menu-toggle { display: none; width: 42px; height: 42px; border: 1px solid var(--line); border-radius: 12px; color: var(--text); background: transparent; }
+
+    .hero { position: relative; padding: 97px 0 82px; overflow: hidden; }
+    .hero-grid { display: grid; grid-template-columns: minmax(0, .92fr) minmax(460px, 1.08fr); align-items: center; gap: 55px; }
+    .hero-copy { position: relative; z-index: 2; }
+    .hero h1 { margin: 22px 0 22px; max-width: 620px; font-size: clamp(48px, 6.5vw, 79px); line-height: .99; letter-spacing: -.085em; font-weight: 760; }
+    .hero h1 .accent { color: var(--lime); }
+    .hero-lede { max-width: 505px; color: #aeb7a8; font-size: 17px; line-height: 1.75; }
+    .hero-lede strong { color: var(--text); font-weight: 650; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 11px; margin: 30px 0 20px; }
+    .hero-note { display: flex; align-items: center; gap: 9px; color: var(--soft); font-size: 11px; }
+    .hero-note .tiny-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--orange); }
+    .hero-art { min-width: 0; position: relative; }
+    .orb {
+      position: absolute; width: 360px; height: 360px; border-radius: 50%;
+      top: 50%; left: 50%; transform: translate(-50%,-50%);
+      background: radial-gradient(circle, rgba(181,230,83,.12) 0, rgba(181,230,83,.035) 48%, transparent 70%);
+      filter: blur(4px); pointer-events: none;
+    }
+    .editor {
+      position: relative; z-index: 1; overflow: hidden;
+      border: 1px solid rgba(224,240,212,.18); border-radius: 18px;
+      background: rgba(15,19,15,.95);
+      box-shadow: 0 36px 100px rgba(0,0,0,.46), 0 0 0 7px rgba(255,255,255,.014);
+      transform: perspective(1200px) rotateY(-4deg) rotateX(1deg);
+    }
+    .editor-top { height: 47px; display: flex; align-items: center; gap: 7px; padding: 0 15px; border-bottom: 1px solid var(--line); background: #171b16; }
+    .traffic { display: flex; gap: 5px; }
+    .traffic i { display: block; width: 7px; height: 7px; border-radius: 50%; background: #485044; }
+    .traffic i:first-child { background: #e7846d; }
+    .traffic i:nth-child(2) { background: #e8c66f; }
+    .traffic i:nth-child(3) { background: #91c87a; }
+    .editor-label { margin: 0 auto; font: 10px ui-monospace, SFMono-Regular, Menlo, monospace; color: #899386; }
+    .editor-body { display: grid; grid-template-columns: 130px 1fr; min-height: 305px; }
+    .filetree { padding: 17px 10px; border-right: 1px solid var(--line); color: #83907e; font: 10px/2.3 ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .filetree .file-heading { color: #bac3b3; font-size: 9px; letter-spacing: .08em; margin-bottom: 7px; }
+    .filetree div { white-space: nowrap; }
+    .filetree .active { color: var(--lime); background: rgba(215,255,105,.075); border-radius: 4px; padding-inline: 5px; margin-inline: -5px; }
+    .filetree .indent { padding-left: 11px; }
+    .code-area { min-width: 0; padding: 20px 17px 15px; font: 11px/1.9 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .code-tab { color: #bdc7b5; padding-bottom: 12px; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,.06); font-size: 10px; }
+    .code-row { display: flex; gap: 14px; white-space: nowrap; }
+    .line-num { color: #50594d; user-select: none; width: 10px; text-align: right; flex: 0 0 10px; }
+    .code { color: #aab6a0; }
+    .kw { color: #d69cff; }
+    .fn { color: #a9ceff; }
+    .str { color: #e6c879; }
+    .com { color: #66745f; }
+    .var { color: var(--lime); }
+    .code-fade { opacity: .45; }
+    .agent-float {
+      position: absolute; z-index: 3; right: -19px; bottom: 28px; width: 218px;
+      padding: 13px; border: 1px solid rgba(215,255,105,.28); border-radius: 14px;
+      background: rgba(20,26,18,.96); box-shadow: 0 14px 35px rgba(0,0,0,.35);
+    }
+    .float-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; font-size: 10px; font-weight: 700; margin-bottom: 11px; }
+    .live-pill { color: var(--lime); display: flex; align-items: center; gap: 5px; font: 9px ui-monospace, monospace; }
+    .live-pill::before { content: ""; width: 5px; height: 5px; background: var(--lime); border-radius: 50%; }
+    .agent-line { display: flex; align-items: center; gap: 8px; color: #a8b1a1; font-size: 10px; margin-top: 9px; }
+    .agent-icon { display: grid; place-items: center; width: 24px; height: 24px; color: var(--lime); background: rgba(215,255,105,.08); border: 1px solid rgba(215,255,105,.14); border-radius: 7px; }
+    .agent-icon svg { width: 13px; height: 13px; }
+    .agent-status { margin-left: auto; color: #71806a; font: 9px ui-monospace, monospace; }
+    .signal { position: absolute; width: 90px; height: 90px; right: 25px; top: -26px; border: 1px solid rgba(215,255,105,.17); border-radius: 50%; }
+    .signal::before, .signal::after { content: ""; position: absolute; inset: 11px; border: 1px solid rgba(215,255,105,.12); border-radius: 50%; }
+    .signal::after { inset: 28px; background: var(--lime); box-shadow: 0 0 25px rgba(215,255,105,.28); }
+
+    .ticker { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); overflow: hidden; background: rgba(255,255,255,.018); }
+    .ticker-inner { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 17px 0; color: #7f8979; font: 10px ui-monospace, SFMono-Regular, Menlo, monospace; text-transform: uppercase; letter-spacing: .08em; }
+    .ticker-inner span { display: flex; align-items: center; gap: 10px; white-space: nowrap; }
+    .ticker-inner b { color: var(--lime); font-weight: 500; }
+
+    section.content-section { padding: 105px 0; }
+    .section-heading { display: flex; justify-content: space-between; align-items: end; gap: 35px; margin-bottom: 42px; }
+    .section-heading h2 { max-width: 660px; margin: 13px 0 0; font-size: clamp(33px, 4.4vw, 51px); line-height: 1.07; letter-spacing: -.065em; font-weight: 720; }
+    .section-heading p { max-width: 350px; margin: 0 0 4px; color: var(--muted); font-size: 14px; line-height: 1.75; }
+    .feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 13px; }
+    .feature-card {
+      min-height: 245px; padding: 24px; border: 1px solid var(--line); border-radius: 18px;
+      background: linear-gradient(145deg, rgba(255,255,255,.035), rgba(255,255,255,.012));
+      transition: transform .22s ease, border-color .22s ease, background .22s ease;
+    }
+    .feature-card:hover { transform: translateY(-4px); border-color: rgba(215,255,105,.3); background: linear-gradient(145deg, rgba(215,255,105,.055), rgba(255,255,255,.012)); }
+    .feature-icon { width: 43px; height: 43px; display: grid; place-items: center; border: 1px solid rgba(215,255,105,.17); border-radius: 12px; background: rgba(215,255,105,.055); color: var(--lime); }
+    .feature-icon svg { width: 20px; height: 20px; }
+    .feature-card h3 { margin: 22px 0 8px; font-size: 16px; letter-spacing: -.025em; }
+    .feature-card p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.8; }
+    .feature-card .mini-tag { display: inline-flex; margin-top: 17px; padding: 5px 8px; color: #a9b39f; border-radius: 6px; background: rgba(255,255,255,.045); font: 9px ui-monospace, monospace; }
+
+    .team-section { padding: 90px 0; border-block: 1px solid var(--line); background: linear-gradient(120deg, rgba(215,255,105,.045), transparent 35%, rgba(255,155,104,.035)); }
+    .team-layout { display: grid; grid-template-columns: .82fr 1.18fr; align-items: center; gap: 75px; }
+    .team-copy h2 { margin: 14px 0 18px; font-size: clamp(35px, 4.2vw, 52px); line-height: 1.05; letter-spacing: -.07em; }
+    .team-copy p { color: var(--muted); font-size: 14px; line-height: 1.8; }
+    .team-note { display: flex; gap: 11px; margin-top: 24px; padding: 15px; border: 1px solid rgba(215,255,105,.17); border-radius: 12px; background: rgba(215,255,105,.035); font-size: 11px; color: #b8c1b0; }
+    .team-note svg { flex: 0 0 17px; width: 17px; color: var(--lime); }
+    .team-board { padding: 22px; border: 1px solid rgba(235,243,229,.15); border-radius: 20px; background: rgba(12,15,12,.82); box-shadow: 0 25px 80px rgba(0,0,0,.22); }
+    .board-title { display: flex; justify-content: space-between; align-items: center; padding-bottom: 17px; border-bottom: 1px solid var(--line); }
+    .board-title strong { font-size: 12px; }
+    .board-title span { color: var(--soft); font: 9px ui-monospace, monospace; }
+    .task-list { display: grid; gap: 8px; padding-top: 15px; }
+    .task { display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid rgba(255,255,255,.055); border-radius: 11px; background: rgba(255,255,255,.022); }
+    .task-mark { width: 29px; height: 29px; display: grid; place-items: center; border-radius: 8px; color: var(--lime); background: rgba(215,255,105,.08); }
+    .task-mark svg { width: 15px; height: 15px; }
+    .task-detail { min-width: 0; flex: 1; }
+    .task-detail strong { display: block; font-size: 11px; font-weight: 650; }
+    .task-detail small { display: block; color: #778171; font-size: 10px; margin-top: 2px; }
+    .task-state { color: #8ea07c; font: 9px ui-monospace, monospace; }
+    .task:nth-child(2) .task-state { color: var(--lime); }
+    .task:nth-child(3) .task-state { color: var(--orange); }
+
+    .loop-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 11px; margin-top: 42px; }
+    .loop-step { position: relative; padding: 17px 15px; min-height: 150px; border: 1px solid var(--line); border-radius: 14px; background: rgba(255,255,255,.018); }
+    .loop-num { display: block; color: var(--lime); font: 10px ui-monospace, monospace; }
+    .loop-step h3 { margin: 24px 0 8px; font-size: 13px; }
+    .loop-step p { margin: 0; color: var(--muted); font-size: 10px; line-height: 1.7; }
+
+    .platform-section { padding-top: 80px !important; }
+    .platform-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .platform-card { display: flex; flex-direction: column; min-height: 184px; padding: 20px; border: 1px solid var(--line); border-radius: 16px; background: rgba(255,255,255,.02); }
+    .platform-card.primary { border-color: rgba(215,255,105,.36); background: linear-gradient(140deg, rgba(215,255,105,.09), rgba(255,255,255,.015)); }
+    .platform-icon { color: var(--lime); margin-bottom: 26px; }
+    .platform-icon svg { width: 25px; height: 25px; }
+    .platform-card h3 { margin: 0; font-size: 15px; }
+    .platform-card p { margin: 5px 0 18px; color: var(--muted); font-size: 11px; }
+    .status { width: fit-content; margin-top: auto; padding: 5px 8px; border: 1px solid var(--line); border-radius: 6px; color: #a4ad9b; font: 9px ui-monospace, monospace; text-transform: uppercase; letter-spacing: .06em; }
+    .primary .status { color: var(--lime); border-color: rgba(215,255,105,.25); background: rgba(215,255,105,.07); }
+
+    .manifesto { padding: 83px 0; }
+    .manifesto-card { position: relative; overflow: hidden; padding: clamp(28px, 6vw, 65px); border-radius: 26px; border: 1px solid rgba(215,255,105,.24); background: radial-gradient(ellipse at 80% 0%, rgba(215,255,105,.13), transparent 40%), #111610; }
+    .manifesto-card::after { content: "{ }"; position: absolute; right: 22px; bottom: -83px; color: rgba(215,255,105,.045); font: 300 240px/1 ui-monospace, monospace; letter-spacing: -.12em; pointer-events: none; }
+    .manifesto-card h2 { max-width: 740px; position: relative; z-index: 1; margin: 18px 0; font-size: clamp(33px, 5.5vw, 65px); letter-spacing: -.075em; line-height: 1.04; }
+    .manifesto-card h2 span { color: var(--lime); }
+    .manifesto-card p { position: relative; z-index: 1; max-width: 520px; color: #aab5a0; font-size: 14px; line-height: 1.8; }
+    .manifesto-card .button { position: relative; z-index: 1; margin-top: 13px; }
+
+    footer { border-top: 1px solid var(--line); }
+    .footer-main { display: flex; align-items: center; justify-content: space-between; gap: 25px; padding: 30px 0; }
+    .footer-brand { display: flex; flex-direction: column; gap: 6px; }
+    .footer-brand .brand { width: fit-content; }
+    .footer-brand small { color: var(--soft); font-size: 10px; }
+    .footer-links { display: flex; gap: 22px; flex-wrap: wrap; color: var(--muted); font-size: 11px; }
+    .footer-links a:hover { color: var(--lime); }
+    .footer-bottom { display: flex; justify-content: space-between; gap: 20px; padding: 15px 0 23px; border-top: 1px solid rgba(255,255,255,.045); color: #606b5b; font: 9px ui-monospace, monospace; }
+
+    @media (max-width: 980px) {
+      .hero { padding-top: 75px; }
+      .hero-grid { grid-template-columns: 1fr; gap: 55px; }
+      .hero-copy { max-width: 700px; }
+      .hero-art { width: min(100%, 700px); margin-inline: auto; }
+      .editor { transform: none; }
+      .agent-float { right: -10px; }
+      .team-layout { grid-template-columns: 1fr; gap: 35px; }
+      .team-copy { max-width: 650px; }
+      .loop-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 700px) {
+      .wrap { width: min(var(--max), calc(100% - 32px)); }
+      .nav { min-height: 66px; }
+      .nav-links { display: none; position: absolute; inset: 65px 0 auto; padding: 20px 24px; flex-direction: column; align-items: stretch; gap: 0; border-bottom: 1px solid var(--line); background: rgba(11,13,11,.98); }
+      .nav-links.open { display: flex; }
+      .nav-links a { padding: 13px 0; border-bottom: 1px solid rgba(255,255,255,.05); }
+      .nav-actions .button-ghost { display: none; }
+      .menu-toggle { display: grid; place-items: center; }
+      .menu-toggle svg { width: 19px; height: 19px; }
+      .hero { padding: 63px 0 60px; }
+      .hero h1 { font-size: clamp(46px, 13vw, 69px); }
+      .hero-lede { font-size: 15px; }
+      .hero-grid { gap: 39px; }
+      .editor-body { grid-template-columns: 94px 1fr; min-height: 280px; }
+      .filetree { font-size: 9px; padding-inline: 9px; }
+      .code-area { padding: 17px 9px; font-size: 9px; }
+      .code-row { gap: 7px; }
+      .agent-float { right: 4px; bottom: -24px; width: 192px; }
+      .signal { width: 70px; height: 70px; right: 18px; top: -20px; }
+      .ticker-inner { overflow-x: auto; justify-content: flex-start; padding: 15px 0; scrollbar-width: none; }
+      .ticker-inner::-webkit-scrollbar { display: none; }
+      section.content-section { padding: 74px 0; }
+      .section-heading { flex-direction: column; align-items: start; gap: 15px; margin-bottom: 28px; }
+      .feature-grid { grid-template-columns: 1fr; }
+      .feature-card { min-height: unset; padding: 21px; }
+      .feature-card h3 { margin-top: 17px; }
+      .team-section { padding: 70px 0; }
+      .team-board { padding: 14px; }
+      .task { padding: 10px 8px; gap: 8px; }
+      .task-state { font-size: 8px; }
+      .loop-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+      .loop-step { padding: 13px; min-height: 137px; }
+      .loop-step h3 { margin-top: 18px; }
+      .platform-grid { grid-template-columns: repeat(2, 1fr); }
+      .platform-card { min-height: 165px; padding: 16px; }
+      .manifesto { padding: 50px 0; }
+      .manifesto-card { border-radius: 19px; }
+      .manifesto-card::after { right: -22px; font-size: 150px; bottom: -45px; }
+      .footer-main { flex-direction: column; align-items: start; }
+      .footer-bottom { flex-direction: column; gap: 8px; }
+    }
+    @media (max-width: 380px) {
+      .nav-actions > .button { padding-inline: 11px; font-size: 11px; }
+      .brand { font-size: 15px; }
+      .brand-mark { width: 31px; height: 31px; }
+      .platform-grid { grid-template-columns: 1fr 1fr; }
+      .platform-card { padding: 13px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap nav">
+      <a class="brand" href="#top" aria-label="blank code home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M8.5 5.5 3.5 12l5 6.5M15.5 5.5l5 6.5-5 6.5M13.8 3.5l-3.6 17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <span>blank code</span>
+      </a>
+      <nav class="nav-links" id="nav-links" aria-label="main navigation">
+        <a href="#vision">the vision</a>
+        <a href="#agents">subagents</a>
+        <a href="#playtest">playtest loop</a>
+        <a href="#platforms">platforms</a>
+      </nav>
+      <div class="nav-actions">
+        <a class="button button-ghost" href="https://github.com/Chayce22315/blank-code" target="_blank" rel="noreferrer">view repository <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <button class="menu-toggle" type="button" aria-label="open navigation" aria-expanded="false" aria-controls="nav-links">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div class="hero-copy">
+          <span class="eyebrow">the coding kitchen is taking shape</span>
+          <h1>your idea.<br><span class="accent">fully cooked.</span></h1>
+          <p class="hero-lede">meet <strong>blank code</strong>: an autonomous-first coding workspace built to turn game ideas into playable projects. one lead agent, a team of specialists, and a real build-and-test loop.</p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#vision">explore the vision <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            <a class="button button-ghost" href="https://github.com/Chayce22315/blank-code" target="_blank" rel="noreferrer">follow on github <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+          </div>
+          <div class="hero-note"><span class="tiny-dot"></span> in development · designed for builders, not subscriptions</div>
+        </div>
+
+        <div class="hero-art" aria-label="illustration of the blank code coding workspace">
+          <div class="orb"></div><div class="signal"></div>
+          <div class="editor">
+            <div class="editor-top">
+              <div class="traffic"><i></i><i></i><i></i></div>
+              <span class="editor-label">neon-district / player_controller.gd</span>
+            </div>
+            <div class="editor-body">
+              <aside class="filetree" aria-label="sample project files">
+                <div class="file-heading">EXPLORER</div>
+                <div>⌄ neon-district</div>
+                <div class="indent">⌄ scripts</div>
+                <div class="indent active">◇ player.gd</div>
+                <div class="indent">◇ enemy.gd</div>
+                <div class="indent">◇ movement.gd</div>
+                <div>⌄ scenes</div>
+                <div class="indent">◇ level_01</div>
+                <div>⌄ assets</div>
+                <div class="indent">◇ materials</div>
+                <div class="indent">◇ sounds</div>
+                <div>◇ project.godot</div>
+              </aside>
+              <div class="code-area">
+                <div class="code-tab">player.gd <span style="color:var(--lime)">●</span></div>
+                <div class="code-row"><span class="line-num">1</span><span class="code"><span class="kw">extends</span> CharacterBody3D</span></div>
+                <div class="code-row"><span class="line-num">2</span><span class="code"></span></div>
+                <div class="code-row"><span class="line-num">3</span><span class="code"><span class="kw">const</span> SPEED = <span class="str">8.5</span></span></div>
+                <div class="code-row"><span class="line-num">4</span><span class="code"><span class="kw">const</span> JUMP_FORCE = <span class="str">12.0</span></span></div>
+                <div class="code-row"><span class="line-num">5</span><span class="code"></span></div>
+                <div class="code-row"><span class="line-num">6</span><span class="code"><span class="kw">func</span> <span class="fn">_physics_process</span>(delta):</span></div>
+                <div class="code-row"><span class="line-num">7</span><span class="code">  <span class="kw">if</span> <span class="fn">is_on_floor</span>():</span></div>
+                <div class="code-row"><span class="line-num">8</span><span class="code">    <span class="kw">if</span> Input.is_action_just_pressed(</span></div>
+                <div class="code-row"><span class="line-num">9</span><span class="code">      <span class="str">"jump"</span>): <span class="var">_jump()</span></span></div>
+                <div class="code-row"><span class="line-num">10</span><span class="code">  <span class="com"># built, tested, ready to play.</span></span></div>
+                <div class="code-row code-fade"><span class="line-num">11</span><span class="code">  <span class="fn">move_and_slide</span>()</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="agent-float">
+            <div class="float-head"><span>agent team</span><span class="live-pill">coordinating</span></div>
+            <div class="agent-line"><span class="agent-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3 4.5 7v5c0 4.5 3.2 7.4 7.5 9 4.3-1.6 7.5-4.5 7.5-9V7L12 3Z" stroke="currentColor" stroke-width="1.7"/><path d="m8.5 12 2.2 2.2 4.8-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>game architect</span><span class="agent-status">planned</span></div>
+            <div class="agent-line"><span class="agent-icon"><svg viewBox="0 0 24 24" fill="none"><path d="m8 5-6 7 6 7M16 5l6 7-6 7M14 3l-4 18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>gameplay coder</span><span class="agent-status">building</span></div>
+            <div class="agent-line"><span class="agent-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M4 5h16v12H4zM9 21h6m-3-4v4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="m7 13 3-3 2 2 4-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>playtest agent</span><span class="agent-status">queued</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="ticker" aria-label="blank code principles">
+      <div class="wrap ticker-inner">
+        <span><b>↗</b> autonomous by design</span>
+        <span><b>↗</b> specialist subagents</span>
+        <span><b>↗</b> real playtesting</span>
+        <span><b>↗</b> model freedom</span>
+        <span><b>↗</b> blank money</span>
+      </div>
+    </div>
+
+    <section class="content-section" id="vision">
+      <div class="wrap">
+        <div class="section-heading">
+          <div><span class="eyebrow">one connected kitchen</span><h2>not just code completion.<br>the whole build.</h2></div>
+          <p>blank code is being designed to connect the tools a project needs, then let agents move work from idea to playable result.</p>
+        </div>
+        <div class="feature-grid">
+          <article class="feature-card">
+            <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M4 5h16v14H4zM4 9h16M9 9v10" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="m6 7 1 0m2 0h1" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></div>
+            <h3>a real coding workspace</h3>
+            <p>project explorer, editor, terminal, git changes, dependency tools, and diagnostics in one place. not a chatbot pretending to be an ide.</p>
+            <span class="mini-tag">code · files · terminal</span>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3v3m0 12v3M3 12h3m12 0h3M5.6 5.6l2.1 2.1m8.6 8.6 2.1 2.1m0-12.8-2.1 2.1m-8.6 8.6-2.1 2.1" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.7"/></svg></div>
+            <h3>game creation tools</h3>
+            <p>connect engines, scenes, gameplay systems, assets, animation, sound, and platform exporters in a workflow the agents can understand.</p>
+            <span class="mini-tag">engines · assets · builds</span>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3 4 7.5v9L12 21l8-4.5v-9L12 3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="m4.5 7.8 7.5 4.4 7.5-4.4M12 12.2V21" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></div>
+            <h3>the project brain</h3>
+            <p>keep architecture, file relationships, design decisions, and task context useful across long projects without stuffing every file into every prompt.</p>
+            <span class="mini-tag">context · memory · search</span>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none"><circle cx="8" cy="8" r="3" stroke="currentColor" stroke-width="1.7"/><circle cx="17" cy="9" r="2.5" stroke="currentColor" stroke-width="1.7"/><path d="M2.5 20c.3-4 2-6 5.5-6s5.2 2 5.5 6m.3-5.6c3.8-.6 6.8 1.4 7.2 5.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></div>
+            <h3>subagents that collaborate</h3>
+            <p>a lead agent delegates to specialists, coordinates shared interfaces, prevents conflicting edits, and checks the integrated result.</p>
+            <span class="mini-tag">plan · delegate · integrate</span>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M3 12a9 9 0 1 0 3-6.7L3 8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M3 3v5h5m4-1v5l3 2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <h3>fix until verified</h3>
+            <p>run the project, inspect real failures, make focused repairs, and retest. show exactly what passed and what still needs attention.</p>
+            <span class="mini-tag">run · observe · repair</span>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3v18m-9-9h18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.7"/></svg></div>
+            <h3>blank money</h3>
+            <p>free core software, provider choice, compatible endpoints, and usage controls. no mandatory subscription baked into the product.</p>
+            <span class="mini-tag">free app · model freedom</span>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="team-section" id="agents">
+      <div class="wrap team-layout">
+        <div class="team-copy">
+          <span class="eyebrow">more than one brain</span>
+          <h2>a whole dev team.<br>on your project.</h2>
+          <p>blank code's lead agent plans the job and calls in the specialists it needs. small task? small team. giant game? scale the crew to the work.</p>
+          <p>agents should share relevant project knowledge, split independent tasks, and coordinate before changing the same systems. the lead verifies the result instead of blindly trusting a green checkmark.</p>
+          <div class="team-note"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3 4 6v6c0 4.5 3.2 7.6 8 9 4.8-1.4 8-4.5 8-9V6l-8-3Z" stroke="currentColor" stroke-width="1.7"/><path d="m8 12 2.5 2.5L16 9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span>you stay in control: inspect work, pause agents, review diffs, and roll back risky changes.</span></div>
+        </div>
+        <div class="team-board" aria-label="illustrative agent task board">
+          <div class="board-title"><strong>underwater facility / task board</strong><span>sample workflow</span></div>
+          <div class="task-list">
+            <div class="task"><span class="task-mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5 9.5 17 19 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div class="task-detail"><strong>map game systems</strong><small>lead agent · dependencies and interfaces</small></div><span class="task-state">planned</span></div>
+            <div class="task"><span class="task-mark"><svg viewBox="0 0 24 24" fill="none"><path d="m8 5-6 7 6 7M16 5l6 7-6 7M14 3l-4 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div class="task-detail"><strong>implement player movement</strong><small>gameplay agent · controller and physics</small></div><span class="task-state">in progress</span></div>
+            <div class="task"><span class="task-mark"><svg viewBox="0 0 24 24" fill="none"><path d="M4 5h16v12H4zM9 21h6m-3-4v4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="m7 13 3-3 2 2 4-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div class="task-detail"><strong>verify the escape loop</strong><small>test agent · gameplay regression tests</small></div><span class="task-state">queued</span></div>
+            <div class="task"><span class="task-mark"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3v3m0 12v3M3 12h3m12 0h3M5.6 5.6l2.1 2.1m8.6 8.6 2.1 2.1m0-12.8-2.1 2.1m-8.6 8.6-2.1 2.1" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.7"/></svg></span><div class="task-detail"><strong>integrate the environment</strong><small>world agent · scenes and asset references</small></div><span class="task-state">queued</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="content-section" id="playtest">
+      <div class="wrap">
+        <div class="section-heading">
+          <div><span class="eyebrow">the proof is in the playtest</span><h2>building is step one.<br>making it work is the job.</h2></div>
+          <p>the target isn't a confident ai response. it's a real project that launches, behaves correctly, and can be checked.</p>
+        </div>
+        <div class="loop-grid">
+          <article class="loop-step"><span class="loop-num">01 / inspect</span><h3>understand</h3><p>map the project, engine, tools, and goal.</p></article>
+          <article class="loop-step"><span class="loop-num">02 / plan</span><h3>decompose</h3><p>create tasks with dependencies and clear outcomes.</p></article>
+          <article class="loop-step"><span class="loop-num">03 / build</span><h3>implement</h3><p>edit files, scenes, assets, and configurations.</p></article>
+          <article class="loop-step"><span class="loop-num">04 / run</span><h3>observe</h3><p>launch tests, collect logs, inspect visible results.</p></article>
+          <article class="loop-step"><span class="loop-num">05 / repair</span><h3>iterate</h3><p>diagnose failures and test targeted fixes.</p></article>
+          <article class="loop-step"><span class="loop-num">06 / deliver</span><h3>verify</h3><p>show build status, changes, and remaining blockers.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="content-section platform-section" id="platforms">
+      <div class="wrap">
+        <div class="section-heading">
+          <div><span class="eyebrow">where the kitchen lives</span><h2>one vision.<br>multiple platforms.</h2></div>
+          <p>the product is being shaped around windows and ios first, with macos next and linux later. platform availability will be announced as builds become real.</p>
+        </div>
+        <div class="platform-grid">
+          <article class="platform-card primary">
+            <div class="platform-icon"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="13" rx="1.5" stroke="currentColor" stroke-width="1.7"/><path d="M8 21h8m-4-4v4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></div>
+            <h3>windows</h3><p>the main desktop kitchen</p><span class="status">primary platform</span>
+          </article>
+          <article class="platform-card primary">
+            <div class="platform-icon"><svg viewBox="0 0 24 24" fill="none"><rect x="6" y="2.5" width="12" height="19" rx="2.3" stroke="currentColor" stroke-width="1.7"/><path d="M10 18.5h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></div>
+            <h3>ios</h3><p>a touch-first companion</p><span class="status">planned</span>
+          </article>
+          <article class="platform-card">
+            <div class="platform-icon"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3.5" width="18" height="14" rx="1.5" stroke="currentColor" stroke-width="1.7"/><path d="M1.5 20.5h21M8 17.5l-1 3m9-3 1 3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></div>
+            <h3>macos</h3><p>desktop expansion</p><span class="status">coming soon</span>
+          </article>
+          <article class="platform-card">
+            <div class="platform-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3a8.5 8.5 0 0 0-8.5 8.5v6A2.5 2.5 0 0 0 6 20h1.5v-7H6a2.5 2.5 0 0 0-2.5 2.5M12 3a8.5 8.5 0 0 1 8.5 8.5v6A2.5 2.5 0 0 1 18 20h-1.5v-7H18a2.5 2.5 0 0 1 2.5 2.5M12 3v4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <h3>linux</h3><p>on the longer roadmap</p><span class="status">later</span>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="manifesto">
+      <div class="wrap">
+        <div class="manifesto-card">
+          <span class="eyebrow">blank code</span>
+          <h2>cursor, but better.<br><span>blank money.</span></h2>
+          <p>the app stays free. the tools work together. the agents do the heavy lifting. and the goal is always something you can actually run.</p>
+          <a class="button button-primary" href="https://github.com/Chayce22315/blank-code" target="_blank" rel="noreferrer">follow the build on github <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap footer-main">
+      <div class="footer-brand">
+        <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M8.5 5.5 3.5 12l5 6.5M15.5 5.5l5 6.5-5 6.5M13.8 3.5l-3.6 17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>blank code</span></a>
+        <small>from blank to built.</small>
+      </div>
+      <nav class="footer-links" aria-label="footer navigation">
+        <a href="#vision">the vision</a><a href="#agents">subagents</a><a href="#platforms">platforms</a><a href="https://github.com/Chayce22315/blank-code" target="_blank" rel="noreferrer">github ↗</a>
+      </nav>
+    </div>
+    <div class="wrap footer-bottom"><span>© <span id="year">2026</span> blank code. built for builders.</span><span>no magic claims. just a bigger kitchen.</span></div>
+  </footer>
+
+  <script>
+    const menuButton = document.querySelector('.menu-toggle');
+    const navigation = document.querySelector('#nav-links');
+
+    menuButton.addEventListener('click', () => {
+      const isOpen = navigation.classList.toggle('open');
+      menuButton.setAttribute('aria-expanded', String(isOpen));
+      menuButton.setAttribute('aria-label', isOpen ? 'close navigation' : 'open navigation');
+    });
+
+    navigation.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => {
+        navigation.classList.remove('open');
+        menuButton.setAttribute('aria-expanded', 'false');
+        menuButton.setAttribute('aria-label', 'open navigation');
+      });
+    });
+
+    document.querySelector('#year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
