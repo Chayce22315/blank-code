@@ -208,9 +208,9 @@ public sealed class ProjectNameDialog : Window
         layout.Children.Add(_nameInput);
         var actions = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Right, Margin = new Thickness(0, 18, 0, 0) };
         var cancel = new Button { Content = "cancel", Margin = new Thickness(0, 0, 8, 0), Padding = new Thickness(14, 8, 14, 8) };
-        cancel.Click += (_, _) => { DialogResult = false; Close(); };
+        cancel.Click += (_, _) => { DialogResult = false; };
         var create = new Button { Content = "create project", Padding = new Thickness(14, 8, 14, 8), Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 159, 67)), Foreground = System.Windows.Media.Brushes.Black, FontWeight = FontWeights.SemiBold };
-        create.Click += (_, _) => { DialogResult = true; Close(); };
+        create.Click += (_, _) => { DialogResult = true; };
         actions.Children.Add(cancel); actions.Children.Add(create); layout.Children.Add(actions);
         Content = layout;
         Loaded += (_, _) => { _nameInput.Focus(); _nameInput.SelectAll(); };
