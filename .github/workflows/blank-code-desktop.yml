@@ -20,5 +20,12 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
-      - name: build native app
-        run: dotnet build .\app\BlankCode.Desktop\BlankCode.Desktop.csproj --configuration Release
+      - name: publish standalone windows app
+        run: dotnet publish .\app\BlankCode.Desktop\BlankCode.Desktop.csproj --configuration Release --runtime win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true --output .\publish
+      - name: upload windows app
+        uses: actions/upload-artifact@v4
+        with:
+          name: blank-code-windows-x64
+          path: .\publish\
+          if-no-files-found: error
+          retention-days: 14
